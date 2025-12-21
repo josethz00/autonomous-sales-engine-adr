@@ -1,72 +1,231 @@
 # Autonomous Sales Engine ADR
 
-This is an Architecture Decision Record (ADR) for an autonomous sales engine
+**Status:** Accepted  
+&nbsp;
+**Deciders:** José Thomaz  
+&nbsp;
+**Date:** 2025-12-18  
 
-    Status: [proposed | rejected | accepted | deprecated | … | superseded by ADR-0005]
-    Deciders: [list everyone involved in the decision]
-    Date: [YYYY-MM-DD when the decision was last updated]
+**Technical Story:** Design and implementation of a one-click, agentic autonomous sales engine capable of ingesting brand and competitor emails, generating a strategy Blueprint, producing outbound sales emails, and executing mass sends safely.
 
-Technical Story: [description | ticket/issue URL]
+---
 
 ## Context and Problem Statement
 
-[Describe the context and problem statement, e.g., in free form using two to three sentences. You may want to articulate the problem in form of a question.]
+We are building an AI-native sales engine where a user provides a brand, competitors, and email access, then receives generated outbound sales emails with minimal setup.  
+The challenge is orchestrating ingestion, reasoning, and generation steps reliably without overengineering early-stage infrastructure or falsely claiming real-time intelligence.
+
+The core question is:  
+**How do we build a production-grade, agentic pipeline that is simple to ship, observable, and evolvable—without premature complexity?**
+
+---
 
 ## Decision Drivers
 
-    [driver 1, e.g., a force, facing concern, …]
-    [driver 2, e.g., a force, facing concern, …]
-    …
+- One-click UX (no manual multi-step flows)
+- Agentic reasoning from v1
+- Clear separation between orchestration and business logic
+- Safe handling of side effects (email sending)
+- Easy debugging and observability
+- Acceptable to investors and senior engineers
+- Avoid overengineering (but not a hack)
+
+---
 
 ## Considered Options
 
-    [option 1]
-    [option 2]
-    [option 3]
-    …
+1. Custom queue + stateless workers + DB-driven stages
+2. DAG orchestration frameworks (Dagster / Prefect)
+3. Fully real-time, streaming-based architecture
+4. Hybrid orchestration with Prefect limited to orchestration only
+
+---
 
 ## Decision Outcome
 
-Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
-Positive Consequences
+**Chosen option:** *Hybrid orchestration using Prefect strictly for orchestration*, combined with stateless Python workers and explicit storage layers.
 
-    [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
-    …
+This option best balances speed to ship, clarity, agentic reasoning, and long-term flexibility while avoiding orchestration overreach.
 
-Negative Consequences
+---
 
-    [e.g., compromising quality attribute, follow-up decisions required, …]
-    …
+## Final Architecture (Accepted)
+
+```
+┌──────────────┐
+│   Frontend   │
+│ (React / TS) │
+└──────┬───────┘
+       │ OAuth + POST /campaign
+       ▼
+┌─────────────────────┐
+│     Core API        │
+│   (FastAPI)         │
+│ - stores campaign   │
+│ - stores tokens     │
+└──────┬──────────────┘
+       │ webhook trigger
+       ▼
+┌──────────────────────────┐
+│        Prefect           │
+│   (ORCHESTRATION ONLY)   │
+│                          │
+│  Flow = campaign_flow    │
+│                          │
+│  1) ingest_brand_emails  │
+│  2) ingest_competitors   │
+│  3) extract_features     │
+│  4) generate_blueprint   │
+│  5) generate_emails      │
+└──────┬───────────────────┘
+       │ writes artifacts
+       ▼
+┌──────────────────────────────────────────┐
+│               Storage                    │
+│  Postgres | S3 | pgvector                │
+└──────────────────────────────────────────┘
+
+(after approval)
+
+┌────────────────────────┐
+│   Send Workers         │
+│ (rate-limited)         │
+└─────────┬──────────────┘
+          ▼
+      ESP (SES / SendGrid)
+```
+
+---
+
+## Why Prefect (and How It Is Used)
+
+Prefect is used **only** as an orchestration engine:
+
+- Triggered via webhook from Core API
+- Executes a predefined `campaign_flow`
+- Tracks progress and failures
+- Exposes run state for frontend polling
+
+Prefect **does NOT**:
+- Contain business logic
+- Perform reasoning
+- Replace agents or workers
+
+All intelligence lives in Python code, not in Prefect graphs.
+
+---
+
+## Pipeline Breakdown
+
+### 1. Campaign Creation
+- Frontend submits brand + competitors
+- Core API stores campaign + OAuth tokens
+- Core API triggers Prefect via webhook
+
+### 2. Brand Email Ingestion
+- Batch ingestion from Gmail/Outlook
+- Raw emails → S3
+- Normalized emails → Postgres
+
+### 3. Competitor Email Ingestion
+- Inbox seeding
+- Public sources
+- Third-party tools (if available)
+- Heuristics over structure and cadence
+
+No hard performance metrics required.
+
+### 4. Feature Extraction
+- Deterministic, batch computation
+- Lengths, cadence, CTAs, follow-ups
+- Stored in Postgres
+
+### 5. Blueprint Generation (Agentic)
+- Aggregates brand + competitor patterns
+- Applies conservative constraints
+- LLM used only for synthesis
+- Outputs a structured Blueprint
+
+### 6. Email Generation
+- Existing generation service
+- Blueprint-enforced
+- Stored and previewed
+- Not auto-sent
+
+### 7. Mass Send (Post-Approval)
+- Separate send workers
+- Rate-limited
+- Idempotent
+- Kill-switch protected
+
+---
+
+## Agent Model (Key Principle)
+
+> **Agents reason. Workers execute. Prefect orchestrates.**
+
+- Agents are stateless Python functions
+- Inputs/outputs are structured
+- LLMs are used only for reasoning
+- Side effects happen in workers
+
+---
 
 ## Pros and Cons of the Options
-[option 1]
 
-[example | description | pointer to more information | …]
+### Option 1: Custom Queue + Workers
 
-    Good, because [argument a]
-    Good, because [argument b]
-    Bad, because [argument c]
-    …
+**Good**
+- Maximum control
+- Clean separation
 
-[option 2]
+**Bad**
+- More infra to build
+- More operational overhead early
 
-[example | description | pointer to more information | …]
+---
 
-    Good, because [argument a]
-    Good, because [argument b]
-    Bad, because [argument c]
-    …
+### Option 2: Heavy DAG Frameworks Everywhere
 
-[option 3]
+**Good**
+- Visual pipelines
+- Built-in retries
 
-[example | description | pointer to more information | …]
+**Bad**
+- Encourages logic in orchestration
+- Slows iteration
+- Harder agent evolution
 
-    Good, because [argument a]
-    Good, because [argument b]
-    Bad, because [argument c]
-    …
+---
 
-Links
+### Option 3: Real-Time Streaming
 
-    [Link type] [Link to ADR]
-    …
+**Good**
+- Sounds impressive
+
+**Bad**
+- Not needed
+- Hard to debug
+- Overkill for UX
+
+---
+
+### Option 4: Prefect for Orchestration Only (Chosen)
+
+**Good**
+- Fast to ship
+- Observable
+- Investor-safe
+- Evolvable
+
+**Bad**
+- Requires discipline not to misuse Prefect
+
+---
+
+## Links
+
+- Prefect Documentation
+- FastAPI
+- pgvector
+- AWS SES / SendGrid

@@ -226,6 +226,13 @@ No hard performance metrics required.
 
 ---
 
+## Deep-dive in the details
+
+If you wish to understand more about some specific parts of this system design, check the following links:
+
+- [What Makes a Good Sales Email?](https://github.com/josethz00/autonomous-sales-engine-adr/blob/main/GOOD_SALES_EMAIL.md)
+- [Database Indexing and Blueprint](https://github.com/josethz00/autonomous-sales-engine-adr/blob/main/DATABASE_INDEXING_AND_BLUEPRINT.md)
+
 ## Links
 
 - [Prefect](https://www.prefect.io/)

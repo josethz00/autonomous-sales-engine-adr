@@ -6,6 +6,18 @@ The system separates **raw data storage**, **queryable structured data**, and **
 
 ## Core Tables (Postgres)
 
+### `campaigns`
+
+- `id`
+- `name`
+- `status ('active' | 'canceled' | ...)`
+- `brand`
+- `target_competitor_name (nullable)`
+- `target_competitor_website (nullable)`
+- `additional_context (nullable)`
+- `created_at`
+- `updated_at`
+
 ### `emails`
 - One row per ingested email (brand or competitor)
 - Stores normalized fields used for filtering, aggregation, and analysis
@@ -95,7 +107,7 @@ Postgres remains the system of record for all analysis and learning.
 
 ---
 
-## Blueprint Representation (Dos, Don’ts, Cadence)
+## Blueprint Representation
 
 The **Blueprint** is derived from Postgres data and stored as a structured artifact:
 
@@ -105,10 +117,37 @@ Includes:
 - **Cadence rules** (e.g. follow-up spacing ranges)
 - **Structural constraints** (length, sections, tone)
 
-Blueprints are:
-- Human-readable
-- Deterministic
-- Enforced downstream during generation and sending
+Blueprints are continuously evolving and fully versioned to support auditing, A/B testing, regression analysis, and debugging. Each Blueprint includes explicit metadata such as:
+
+- `campaign_id`
+- `version`
+- `status (active, archived, ...)`
+- `created_at`
+
+This allows the system to:
+
+- Track which Blueprint is currently active for a campaign
+- Preserve historical Blueprints for comparison and rollback
+- Run controlled experiments across Blueprint versions
+
+In addition to the final Blueprint output, the inputs used to generate the Blueprint are also stored, including:
+
+- Time windows
+- Email counts
+- Feature distributions
+- Confidence thresholds
+
+This guarantees reproducibility and explainability.
+
+### Evolution Over Time
+
+As new emails are ingested:
+
+- A new Blueprint version is generated
+- Weak or unstable signals are discarded
+- Persistent patterns gain more weight
+
+Confidence thresholds tighten automatically
 
 ---
 
@@ -120,3 +159,4 @@ Blueprints are:
 - S3 = cheap, replayable raw storage
 
 Result: a dataset that is both **queryable by rules** and **searchable by meaning**, while remaining safe, idempotent, and production-ready.
+

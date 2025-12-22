@@ -233,6 +233,7 @@ If you wish to understand more about some specific parts of this system design, 
 
 - [What Makes a Good Sales Email?](https://github.com/josethz00/autonomous-sales-engine-adr/blob/main/GOOD_SALES_EMAIL.md)
 - [Database Indexing and Blueprint](https://github.com/josethz00/autonomous-sales-engine-adr/blob/main/DATABASE_INDEXING_AND_BLUEPRINT.md)
+- [Limitations and Edge Cases](https://github.com/josethz00/autonomous-sales-engine-adr/blob/main/LIMITATIONS_AND_EDGE_CASES.md)
 
 ## Links
 

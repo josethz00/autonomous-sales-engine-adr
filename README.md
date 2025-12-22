@@ -1,4 +1,4 @@
-# Autonomous Sales Engine ADR
+<img width="8269" height="9465" alt="image" src="https://github.com/user-attachments/assets/8724912e-494b-4037-8e2f-0a66977c933f" /># Autonomous Sales Engine ADR
 
 **Status:** Accepted  
 &nbsp;
@@ -49,7 +49,7 @@ This option best balances speed to ship, clarity, agentic reasoning, and long-te
 
 ---
 
-## Final Architecture (Accepted)
+## Final Architecture
 
 ```
 ┌──────────────┐
@@ -76,7 +76,6 @@ This option best balances speed to ship, clarity, agentic reasoning, and long-te
 │  2) ingest_competitors   │
 │  3) extract_features     │
 │  4) generate_blueprint   │
-│  5) generate_emails      │
 └──────┬───────────────────┘
        │ writes artifacts
        ▼
@@ -94,6 +93,10 @@ This option best balances speed to ship, clarity, agentic reasoning, and long-te
           ▼
       ESP (SES / SendGrid)
 ```
+
+### Detailed Diagram
+
+<img width="8269" height="9465" alt="image" src="https://github.com/user-attachments/assets/0c19c07c-7d84-49ee-aca6-8328c6ebdb38" />
 
 ---
 

@@ -1,4 +1,4 @@
-<img width="8269" height="9465" alt="image" src="https://github.com/user-attachments/assets/8724912e-494b-4037-8e2f-0a66977c933f" /># Autonomous Sales Engine ADR
+# Autonomous Sales Engine ADR
 
 **Status:** Accepted  
 &nbsp;

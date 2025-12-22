@@ -1,36 +1,39 @@
 ## 1) What makes a good sales email (research-driven)
 
-Good sales emails don’t rely on spray-and-pray tactics. Instead, they focus on **relevance, clarity, value, and sequencing**. Based on *How to Write a Good Sales Email* from Kaspr — distilled into key principles and measurable signals — here’s what works:
+Good sales emails focus on **relevance, clarity, value, and sequencing**. I based my response on these two articles:
+
+- [Artisan - How to Write a Sales Email that Gets Replies](https://www.kaspr.io/blog/how-to-write-a-good-sales-email)
+- [Kaspr.io - How To Write a Good Sales Email](https://www.kaspr.io/blog/how-to-write-a-good-sales-email)
 
 ### What Makes Sales Emails Work
 
 **Subject Lines**
 - The subject line determines whether an email gets opened or ignored.  
-- Effective subjects are **short, relevant, curiosity-sparking**, and sometimes personalized (e.g., using the prospect’s name with a connector).  
-- Avoid generic phrases like “check this out” or overly long intros. :contentReference[oaicite:0]{index=0}
+- Effective subjects are short, relevant, curiosity-sparking, and sometimes personalized (e.g., using the prospect’s name with a connector).  
+- Avoid generic phrases like “check this out” or overly long intros.
 
 **Opening Lines**
 - Once opened, emails must immediately catch attention.  
-- Good openers reference something about the prospect—e.g., a recent LinkedIn post, product announcement, or public signal—showing research and contextual relevance. :contentReference[oaicite:1]{index=1}
+- Good openers reference something about the prospect—e.g., a recent LinkedIn post, product announcement, or public signal—showing research and contextual relevance.
 
 **Body Copy That Is Value-Led**
 - Effective emails focus on **what’s in it for the prospect**, not just what the sender wants.  
 - They clearly articulate a problem the prospect might face and how the sender *helps solve it*.  
-- The tone is concise and written from the prospect’s perspective. :contentReference[oaicite:2]{index=2}
+- The tone is concise and written from the prospect’s perspective.
 
 **Clear, Low-Friction CTAs**
 - Rather than immediately asking for a meeting, strong CTAs ask for **interest or a small next step** that’s easy to reply to (e.g., “Would you be open to learning more?”).  
-- This reduces resistance and increases reply rates. :contentReference[oaicite:3]{index=3}
+- This reduces resistance and increases reply rates.
 
 **Follow-Ups Matter**
 - Most replies come from **follow-ups**, not the first touch.  
-- Effective follow-ups avoid boilerplate reminders and instead **nudge for feedback** or offer context to rekindle engagement. :contentReference[oaicite:4]{index=4}
+- Effective follow-ups avoid boilerplate reminders and instead **nudge for feedback** or offer context to rekindle engagement.
 
 **Concise and Mobile-Friendly**
 - Great emails are short, with simple sentences and formatting that reads well on mobile.  
-- Every sentence should serve the purpose of moving the reader toward engagement. :contentReference[oaicite:5]{index=5}
+- Every sentence should serve the purpose of moving the reader toward engagement.
 
-### What Signals Matter Most (Even If Imperfect)
+### What Signals Matter Most?
 
 Since perfect performance metrics (e.g., reply conversions) are often unavailable, the system should focus on **structural and behavioral proxies**:
 
@@ -54,7 +57,7 @@ Since perfect performance metrics (e.g., reply conversions) are often unavailabl
 
 **5. Follow-Up Structure**
 - Number of touches in a sequence
-- Variation between message bodies (not just repeated copy)
+- Variation between message bodies
 - Timing intervals between touches
 
 **6. Readability**
@@ -75,4 +78,5 @@ To generate an effective Blueprint, the system needs to infer:
 - **Contextual relevance features**, such as whether the email explicitly references prospect signals
 - **Readability constraints**, ensuring emails are scannable and mobile-friendly
 
-A strong Blueprint captures these as **structured constraints and preferences** (not copy), such that a generation agent can produce outbound emails likely to engage prospects based on patterns observed across successful historical emails. :contentReference[oaicite:6]{index=6}
+A strong Blueprint captures these as **structured constraints and preferences**, allowing a generation agent to produce outbound emails that are likely to engage prospects based on patterns observed in successful historical emails.
+

@@ -228,7 +228,10 @@ No hard performance metrics required.
 
 ## Links
 
-- Prefect Documentation
-- FastAPI
-- pgvector
-- AWS SES / SendGrid
+- [Prefect](https://www.prefect.io/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [pgvector](https://github.com/pgvector/pgvector)
+- [AWS SQS](https://aws.amazon.com/sqs/)
+- [AWS S3](https://aws.amazon.com/s3/)
+- [AWS SES](https://aws.amazon.com/ses/)

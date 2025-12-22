@@ -160,6 +160,7 @@ No hard performance metrics required.
 - Rate-limited
 - Idempotent
 - Kill-switch protected
+- I suggest a tool like (MailReach)[https://www.mailreach.co] to help with handling domain warmup and spam checks
 
 ---
 
